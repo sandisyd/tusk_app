@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^6.2.0
   gap: ^3.0.1
   get: ^4.6.6
+  d_session: ^0.0.3
 
 dev_dependencies:
   flutter_test:
