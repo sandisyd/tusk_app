@@ -1,9 +1,11 @@
 import 'package:intl/intl.dart';
 
+import '../data/models/task.dart';
+
 String dateByStatus(Task task) {
   switch (task.status) {
     case 'Queue':
-      return _formatDateTime1(task.createdAt!);
+      return _formatDateTime1(task.cretedAt!);
     case 'Review':
       return _formatDateTime1(task.submitDate!);
     case 'Approved':
@@ -27,5 +29,7 @@ String iconByStatus(Task task) {
       return "assets/approved_icon.png";
     case 'Rejected':
       return "assets/queue_icon.png";
+    default:
+      return "-";
   }
 }
