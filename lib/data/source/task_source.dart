@@ -53,4 +53,30 @@ class TaskSource {
       return false;
     }
   }
+
+  static Future<bool> rejected(String reason, int id) async {
+    try {
+      final response =
+          await http.patch(Uri.parse('$_baseUrl/$id/reject'), body: {
+        'reason': reason,
+        'rejectedDate': DateTime.now().toIso8601String(),
+      });
+      return response.statusCode == 200;
+    } catch (e) {
+      log("Failed reject task : ${e.toString()}");
+      return false;
+    }
+  }
+
+  static Future<bool> fixToQueue(int revision, int id) async {
+    try {
+      final response = await http.patch(Uri.parse('$_baseUrl/$id/fix'), body: {
+        'revision': revision,
+      });
+      return response.statusCode == 200;
+    } catch (e) {
+      log("Failed reject task : ${e.toString()}");
+      return false;
+    }
+  }
 }
