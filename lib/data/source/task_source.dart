@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:image_picker/image_picker.dart';
 import 'package:tusk_app/common/url_endpoint.dart';
 import 'package:http/http.dart' as http;
+import 'package:tusk_app/data/models/task.dart';
 
 class TaskSource {
   ///`'${Url.baseurl}/tasks'`
@@ -77,6 +78,51 @@ class TaskSource {
     } catch (e) {
       log("Failed reject task : ${e.toString()}");
       return false;
+    }
+  }
+
+  static Future<bool> approvedDate(int id) async {
+    try {
+      final response =
+          await http.patch(Uri.parse('$_baseUrl/$id/approve'), body: {
+        'approvedDate': DateTime.now().toIso8601String(),
+      });
+      return response.statusCode == 200;
+    } catch (e) {
+      log("Failed reject task : ${e.toString()}");
+      return false;
+    }
+  }
+
+  static Future<Task?> findById(int id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$id'),
+      );
+      if (response.statusCode == 200) {
+        Map result = jsonDecode(response.body);
+        return Task.fromJson(Map.from(result));
+      }
+      return null;
+    } catch (e) {
+      log("Failed reject task : ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<List<Task>?> getDataReview(int id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/review/asc'),
+      );
+      if (response.statusCode == 200) {
+        List result = jsonDecode(response.body);
+        return result.map((e) => Task.fromJson(Map.from(e))).toList();
+      }
+      return null;
+    } catch (e) {
+      log("Failed reject task : ${e.toString()}");
+      return null;
     }
   }
 }
