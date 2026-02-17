@@ -121,7 +121,65 @@ class TaskSource {
       }
       return null;
     } catch (e) {
-      log("Failed reject task : ${e.toString()}");
+      log("Failed get data review : ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<List<Task>?> progress(int userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/progress/$userId'),
+      );
+      if (response.statusCode == 200) {
+        List result = jsonDecode(response.body);
+        return result.map((e) => Task.fromJson(Map.from(e))).toList();
+      }
+      return null;
+    } catch (e) {
+      log("Failed get progress : ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<Map?> statistic(int userId) async {
+    List listStatus = ["Queue", "Review", "Approved", "Rejected"];
+    Map stat = {};
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/stat/$userId'),
+      );
+      if (response.statusCode == 200) {
+        List result = jsonDecode(response.body);
+        for (String status in listStatus) {
+          Map? found = result
+              .where((element) => element['status'] == status)
+              .firstOrNull;
+          stat[status] = found?['total'] ?? 0;
+        }
+        return stat;
+      }
+      return null;
+    } catch (e) {
+      log("Failed get statistic : ${e.toString()}");
+      return null;
+    }
+  }
+
+  static Future<List<Task>?> whereUserAndStatus(
+      int userId, String status) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/user/$userId/$status'),
+      );
+      if (response.statusCode == 200) {
+        List result = jsonDecode(response.body);
+
+        return result.map((e) => Task.fromJson(Map.from(e))).toList();
+      }
+      return null;
+    } catch (e) {
+      log("Failed get statistic : ${e.toString()}");
       return null;
     }
   }
